@@ -6,7 +6,7 @@ import {
   Touchable,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ScrollView,
   TextInput,
@@ -15,14 +15,36 @@ import {
 import { XMarkIcon } from "react-native-heroicons/outline";
 
 const SearchScreen = ({ navigation }) => {
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([1, 2, 3, 4]);
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = (value) => {
+    if (value && value.length > 2) {
+      setLoading(true);
+      searchMovies({
+        query: value,
+        include_adult: "false",
+        language: "en-US",
+        page: "1",
+      }).then((data) => {
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+      setResults([]);
+    }
+  };
+
+  const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchBar}>
         <TextInput
+          onChangeText={handleTextDebounce}
           placeholder="Search a movie..."
           placeholderTextColor="lightgray"
+          color="white"
         />
         <TouchableOpacity
           style={styles.searchBarContainer}

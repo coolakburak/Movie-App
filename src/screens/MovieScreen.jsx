@@ -26,7 +26,7 @@ const MovieScreen = ({ navigation }) => {
   const { params: item } = useRoute();
 
   const [isFavourite, setIsFavourite] = useState(false);
-  const [cast, setCast] = useState([1,2,3,4,5]);
+  const [cast, setCast] = useState([]);
   const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5]);
   const [loading, setLoading] = useState(false);
   const [movie, setMovie] = useState({});
@@ -39,19 +39,19 @@ const MovieScreen = ({ navigation }) => {
   }, [item]);
 
   const getMovieDetails = async (id) => {
-    setLoading(false);
     const data = await fetchMovieDetails(id);
     if (data) setMovie(data);
+    setLoading(false);
   };
   const getMovieCredits = async (id) => {
-    if (data && data.cast) setCast(data.cast);
     const data = await fetchMovieCredits(id);
-     console.log("credits", data.cast);
+    if (data && data.cast) setCast(data.cast);
     setLoading(false);
   };
   const getSimilarMovies = async (id) => {
-    setLoading(false);
     const data = await fetchSimilarMovies(id);
+    if (data && data.results) setSimilarMovies(data.results);
+    setLoading(false);
   };
 
   return (

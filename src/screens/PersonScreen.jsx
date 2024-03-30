@@ -6,19 +6,45 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { ChevronLeftIcon } from "react-native-heroicons/solid";
 import { HeartIcon } from "react-native-heroicons/solid";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import MovieList from "../components/MovieList";
 import Loading from "../components/Loading";
+import {
+  fetchPersonDetails,
+  fetchPersonMovies,
+  image500,
+} from "../../api/moviedb";
 
 const PersonScreen = () => {
+  const { params: item } = useRoute();
   const navigation = useNavigation();
   const [isFavourite, setIsFavourite] = useState(false);
-  const [personMovies, setPersonMovies] = useState([1, 2, 3, 4, 5]);
+  const [personMovies, setPersonMovies] = useState([]);
+  const [person, setPerson] = useState({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    getPersonMovies(item.id);
+    getPersonDetails(item.id);
+  }, [item]);
+
+  const getPersonDetails = async (id) => {
+    const data = await fetchPersonDetails(id);
+    if (data) setPerson(data);
+    setLoading(false);
+  };
+
+  const getPersonMovies = async (id) => {
+    const data = await fetchPersonMovies(id);
+    if (data && data.cast) setPersonMovies(data.cast);
+    setLoading(false);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView style={styles.moviePoster}>
@@ -45,61 +71,44 @@ const PersonScreen = () => {
         <View>
           <View style={styles.personDetailsContainer}>
             <Image
-              source={require("../../assets/images/splashimage.jpg")}
+              source={{ uri: image500(person?.profile_path) }}
               style={styles.personImage}
+              resizeMode="cover"
+              width={250}
+              height={250}
             />
           </View>
           {/* NAME AND HOMETOWN */}
           <View style={styles.personInfoContainer}>
-            <Text style={styles.personName}>Tom Hanks</Text>
-            <Text style={styles.personHome}>California, USA</Text>
+            <Text style={styles.personName}>{person.name}</Text>
+            <Text style={styles.personHome}>{person.place_of_birth}</Text>
           </View>
           {/* PERSONAL INFOS */}
           <View style={styles.description}>
             <View style={styles.descriptionDown}>
               <Text style={styles.descriptionText}>Gender</Text>
-              <Text style={styles.descriptionText}>Male</Text>
+              <Text style={styles.descriptionText}>
+                {person.gender == 1 ? "Female" : "Male"}
+              </Text>
             </View>
             <View style={styles.descriptionDown}>
               <Text style={styles.descriptionText}>Birthday</Text>
-              <Text style={styles.descriptionText}>04 14 1957</Text>
+              <Text style={styles.descriptionText}>{person.birthday}</Text>
             </View>
             <View style={styles.descriptionDown}>
               <Text style={styles.descriptionText}>Known For</Text>
-              <Text style={styles.descriptionText}>Acting</Text>
+              <Text style={styles.descriptionText}>
+                {person.known_for_department}
+              </Text>
             </View>
             <View style={styles.lastLineDescription}>
               <Text style={styles.lastLine}>Popularity</Text>
-              <Text style={styles.lastLine}>64.23</Text>
+              <Text style={styles.lastLine}>{person.popularity}</Text>
             </View>
           </View>
           <View>
-            <Text>Biography</Text>
-            <Text>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente
-              in totam, amet dolor dolorum aperiam, voluptatem assumenda sunt
-              officiis earum natus odit fugiat. Minima earum necessitatibus,
-              adipisci autem tempora modi quidem officia perferendis, dolorum,
-              esse sequi accusantium incidunt? Quod ab atque non perferendis
-              earum accusamus harum culpa quas provident quos debitis ex, itaque
-              aliquid sunt sit quo sed saepe dolorem eligendi sapiente
-              praesentium ipsa tempore? Pariatur eum iure ipsam tempore placeat.
-              Voluptas unde eius, magni assumenda tenetur commodi quo ipsum
-              incidunt velit illo nobis. Quisquam, quidem. Quisquam, quidem.
-              Quisquam, quidem. Quisquam,Lorem, ipsum dolor sit amet consectetur
-              adipisicing elit. Numquam minima iure sint architecto quo
-              praesentium eius velit vero, id, temporibus consequatur. Quibusdam
-              commodi quas sit temporibus, voluptates cumque fugit placeat, eius
-              provident itaque, voluptatem cupiditate voluptatibus ipsum
-              recusandae et iure corrupti eligendi. Dolor, ipsam enim voluptatum
-              consectetur eos veritatis impedit ad iusto doloremque aperiam
-              delectus aliquid iure. Iusto laboriosam reiciendis unde quos ea
-              voluptas fuga perspiciatis velit provident voluptate ullam qui
-              obcaecati eius libero corporis delectus dolore consequatur officia
-              minima itaque voluptatem quia, maxime facilis ex. Explicabo,
-              temporibus veniam, praesentium aperiam inventore, earum
-              consequuntur dolorum ad dolorem quam nostrum maiores.
-            </Text>
+            <Text style={styles.biographyHeader}>Biography</Text>
+            <Text style={styles.biography}>{person.biography}</Text>
           </View>
           {/* movies */}
           <MovieList title={"Movies"} hideViewAll={true} data={personMovies} />
@@ -135,8 +144,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   personImage: {
-    width: 250,
-    height: 250,
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
@@ -163,14 +170,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#393e46",
     marginHorizontal: 2,
     marginTop: 20,
-    paddingLeft: 12,
+    paddingLeft: 20,
     borderRadius: 100,
   },
   descriptionDown: {
     borderRightWidth: 2,
     borderRightColor: "white",
     paddingVertical: 10,
-    padding: 20,
+    paddingHorizontal: 16,
     alignItems: "center",
   },
   descriptionText: {
@@ -180,7 +187,7 @@ const styles = StyleSheet.create({
   },
   lastLineDescription: {
     paddingVertical: 10,
-    padding: 16,
+    paddingRight: 22,
     alignItems: "center",
   },
   lastLine: {
@@ -189,6 +196,22 @@ const styles = StyleSheet.create({
     fontWeight: "200",
     alignItems: "center",
     justifyContent: "center",
-    paddingRight: 10,
+    paddingRight: 14,
+    marginLeft: 10,
+  },
+  biographyHeader: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginLeft: 20,
+  },
+  biography: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "200",
+    marginTop: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
 });

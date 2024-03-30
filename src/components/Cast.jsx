@@ -44,24 +44,29 @@ const Cast = ({ cast }) => {
           ))} */}
         {cast &&
           cast.map((person, index) => {
-            console.log("person", person); // Log the person object
             return (
               <TouchableOpacity
                 onPress={() => navigation.navigate("PersonScreen", person)}
                 style={styles.castContainer}
                 key={index}
               >
-                <View style={styles.castPhoto}>
-                  <Image source={{ uri: image185(person?.profile_path) }} />
+                <View>
+                  <Image
+                    source={{ uri: image185(person?.profile_path) }}
+                    width={100}
+                    height={100}
+                    borderRadius={60}
+                    resizeMode="stretch"
+                  />
                 </View>
                 <Text style={styles.castText}>
-                  {person.name.length > 10
-                    ? person.name.slice(0, 10) + "..."
+                  {person.name?.length > 15
+                    ? person.name.slice(0, 15) + "..."
                     : person.name}
                 </Text>
                 <Text style={styles.castText}>
-                  {person.character.length > 10
-                    ? person.character.slice(0, 10) + "..."
+                  {person.character.length > 15
+                    ? person.character.slice(0, 15) + "..."
                     : person.character}
                 </Text>
               </TouchableOpacity>
@@ -88,19 +93,14 @@ const styles = StyleSheet.create({
   castContainer: {
     borderRadius: 10,
     marginRight: 16,
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
+    alignItems: "center",
   },
-  castPhoto: {
-    width: 260,
-    height: 260,
-    resizeMode: "cover",
-    borderRadius: 50,
-  },
+
   castText: {
     color: "white",
     textAlign: "center",
     fontSize: 12,
-    marginTop: 4,
   },
 });

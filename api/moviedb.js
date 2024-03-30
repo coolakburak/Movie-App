@@ -15,16 +15,24 @@ const movieCreditsEndpoint = (id) =>
   `${apiBaseUrl}/movie/${id}/credits?api_key=${API_KEY}`;
 const movieSimilarMoviesEndpoint = (id) =>
   `${apiBaseUrl}/movie/${id}/similar?api_key=${API_KEY}`;
-
 const movieImagesEndpoint = (id) =>
   `${apiBaseUrl}/movie/${id}/images?api_key=${API_KEY}`;
+
+const personDetailsEndpoint = (id) =>
+  `${apiBaseUrl}/person/${id}?api_key=${API_KEY}`;
+const personMoviesEndpoint = (id) =>
+  `${apiBaseUrl}/person/${id}/movie_credits?api_key=${API_KEY}`;
+const searchMoviesEndpoint = (id) =>
+  `${apiBaseUrl}/search/movie?api_key=${API_KEY}`;
 
 export const image500 = (path) =>
   path ? `https://image.tmdb.org/t/p/w500${path}` : null;
 export const image342 = (path) =>
   path ? `https://image.tmdb.org/t/p/w342${path}` : null;
 export const image185 = (path) =>
-  path ? `https://image.tmdb.org/t/p/w185/${path}` : "https://via.placeholder.com/185";
+  path
+    ? `https://image.tmdb.org/t/p/w185/${path}`
+    : "https://via.placeholder.com/185";
 
 const apiCall = async (endpoint, params) => {
   const options = {
@@ -60,6 +68,15 @@ export const fetchSimilarMovies = async (id) => {
 };
 export const fetchMovieImages = async (id) => {
   return await apiCall(movieImagesEndpoint(id));
+};
+export const fetchPersonDetails = async (id) => {
+  return await apiCall(personDetailsEndpoint(id));
+};
+export const fetchPersonMovies = async (id) => {
+  return await apiCall(personMoviesEndpoint(id));
+};
+export const fetchSearchMovies = async (id) => {
+  return await apiCall(searchMoviesEndpoint(id));
 };
 
 /* const options = {

@@ -49,12 +49,13 @@ export default TrendingMovies;
 const styles = StyleSheet.create({
   container: {
     marginBottom: 32,
+    right: 22,
   },
   headerText: {
     color: "white",
     fontSize: 24,
     fontWeight: "bold",
-    marginHorizontal: 16,
+    marginHorizontal: 32,
     marginBottom: 20,
   },
   carouselContainer: {
