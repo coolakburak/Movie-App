@@ -13,21 +13,24 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { XMarkIcon } from "react-native-heroicons/outline";
+import { fetchSearchMovies, image185, image342 } from "../../api/moviedb";
+import { debounce } from "lodash";
 
 const SearchScreen = ({ navigation }) => {
-  const [results, setResults] = useState([1, 2, 3, 4]);
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = (value) => {
     if (value && value.length > 2) {
       setLoading(true);
-      searchMovies({
+      fetchSearchMovies({
         query: value,
         include_adult: "false",
         language: "en-US",
         page: "1",
       }).then((data) => {
         setLoading(false);
+        if (data && data.results) setResults(data.results);
       });
     } else {
       setLoading(false);
@@ -35,7 +38,7 @@ const SearchScreen = ({ navigation }) => {
     }
   };
 
-  const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
+  const handleTextDebounce = useCallback(debounce(handleSearch, 500), []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,9 +74,11 @@ const SearchScreen = ({ navigation }) => {
               >
                 <Image
                   style={styles.resultImage}
-                  source={require("../../assets/images/tomato.jpg")}
+                  source={{uri: image185(item.poster_path)}}
                 />
-                <Text style={styles.movieName}>Movie Name</Text>
+                <Text style={styles.movieName}>{item.title.length>22 ? item.title.slice(0, 22) + "..." : item.title
+                }
+                </Text>
               </TouchableOpacity>
             ))}
           </View>

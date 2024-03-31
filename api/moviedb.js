@@ -7,6 +7,7 @@ const trendingMoviesEndpoint = `${apiBaseUrl}/movie/
 now_playing?api_key=${API_KEY}`;
 const upcomingMoviesEndpoint = `${apiBaseUrl}/movie/upcoming?api_key=${API_KEY}`;
 const topRatedMoviesEndpoint = `${apiBaseUrl}/movie/top_rated?api_key=${API_KEY}`;
+const searchMoviesEndpoint = `${apiBaseUrl}/search/movie?api_key=${API_KEY}`;
 
 // dynamic endpoints
 const movieDetailsEndpoint = (id) =>
@@ -22,8 +23,6 @@ const personDetailsEndpoint = (id) =>
   `${apiBaseUrl}/person/${id}?api_key=${API_KEY}`;
 const personMoviesEndpoint = (id) =>
   `${apiBaseUrl}/person/${id}/movie_credits?api_key=${API_KEY}`;
-const searchMoviesEndpoint = (id) =>
-  `${apiBaseUrl}/search/movie?api_key=${API_KEY}`;
 
 export const image500 = (path) =>
   path ? `https://image.tmdb.org/t/p/w500${path}` : null;
@@ -75,8 +74,8 @@ export const fetchPersonDetails = async (id) => {
 export const fetchPersonMovies = async (id) => {
   return await apiCall(personMoviesEndpoint(id));
 };
-export const fetchSearchMovies = async (id) => {
-  return await apiCall(searchMoviesEndpoint(id));
+export const fetchSearchMovies = (params) => {
+  return apiCall(searchMoviesEndpoint, params);
 };
 
 /* const options = {
