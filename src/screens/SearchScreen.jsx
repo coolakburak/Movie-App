@@ -69,7 +69,7 @@ const SearchScreen = ({ navigation }) => {
           <View style={styles.resultsContainer}>
             {results.map((item, index) => (
               <TouchableOpacity
-                onPress={() => navigation.navigate("MovieScreen")}
+                onPress={() => navigation.navigate("MovieScreen", item)}
                 key={index}
               >
                 <Image
