@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img title="Netflix" src="https://i.pinimg.com/736x/9c/10/59/9c1059f46f5b9803d62325c60fb312b2.jpg" alt="NETFLIX Logo" width="400 height="400"  />
+  <img title="Movie-App" src="https://st.depositphotos.com/8521256/54082/v/600/depositphotos_540821154-stock-video-glitch-camera-icon-black-background.jpg" alt=" Logo" width="400 height="400"  />
   <br></br>
   Netflix like movie library. Created with TMDB API.
 </h1>
